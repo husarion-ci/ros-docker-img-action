@@ -49,7 +49,7 @@ It will publish the images:
 - `husarion/your-repo:<ros-distro>-<tag>-<date>`
 - `husarion/your-repo:<ros-distro>-nightly`
 
-2. On `repository_dispatch` with `build_type=release`
+2. On `repository_dispatch` with `build_type=stable`
 - `husarion/your-repo:<ros-distro>-<tag>-<date>-stable`
 - `husarion/your-repo:<ros-distro>-<tag>-<date>`
 - `husarion/your-repo:<ros-distro>-<tag>`
