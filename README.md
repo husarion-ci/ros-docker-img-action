@@ -31,8 +31,11 @@ jobs:
 
     steps:
 
+      - name: Checkout
+        uses: actions/checkout@v2
+
       - name: Build Docker Image
-        uses: ./.github/actions/ros-docker-img
+        uses: husarion-ci/ros-docker-img-action@v0.1
         with:
           dockerhub_username: ${{ secrets.DOCKERHUB_USERNAME }}
           dockerhub_token:  ${{ secrets.DOCKERHUB_TOKEN }}
@@ -105,8 +108,11 @@ jobs:
 
     steps:
 
+      - name: Checkout
+        uses: actions/checkout@v2
+
       - name: Build Docker Image
-        uses: ./.github/actions/ros-docker-img
+        uses: husarion-ci/ros-docker-img-action@v0.1
         with:
           dockerhub_username: ${{ secrets.DOCKERHUB_USERNAME }}
           dockerhub_token:  ${{ secrets.DOCKERHUB_TOKEN }}
