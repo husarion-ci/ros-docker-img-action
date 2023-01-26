@@ -124,3 +124,19 @@ jobs:
           target_release: ${{ inputs.target_release }}
           target_date: ${{ inputs.target_date }}
 ```
+
+## Inputs
+
+| Name | Required | Default value | Description |
+| - | - | - | - |
+| `dockerhub_username` | yes | - | DockerHub username |
+| `dockerhub_token` | yes | - | DockerHub token |
+| `main_branch_name` | no | main | the name of the main branch - typically "main" or "master" |
+| `dockerfile` | no | Dockerfile | target Dockerfile |
+| `repo_name` | no | - | custom repository name: keep empty to get automatically from repo name |
+| `build_type` | no | development | "stable" or "development" release |
+| `ros_distro` | no | humble | target ROS distribution |
+| `platforms` | no | linux/amd64, linux/arm64 | target architectures |
+| `target_distro` | no | ardent | [Stable release only] Point to the ROS distro (part of tag) of the **EXISTING** docker image on DockerHub |
+| `target_release` | no | 0.0.0 | [Stable release only] Point to the release number (part of tag) of the **EXISTING** docker image on DockerHub |
+| `target_date` | no | 20131206 | [Stable release only] Point to the date (part of tag) of the **EXISTING** docker image on DockerHub |

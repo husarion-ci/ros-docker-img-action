@@ -7,6 +7,15 @@ inputs:
   dockerhub_token:
     description: "DockerHub token"
     required: true
+  main_branch_name:
+    description: "The name of the main branch - typically \"main\" or \"master\""
+    default: "main"
+  dockerfile:
+    description: "target Dockerfile"
+    default: "Dockerfile"
+  repo_name:
+    description: "Custom repository name: keep empty to get automatically from repo name"
+    default: ""
   build_type:
     description: "\"stable\" or \"development\" release"
     default: "development"
@@ -42,8 +51,14 @@ runs:
       run: echo "SHORT_DATE=$(date +%Y%m%d)" >> $GITHUB_ENV
       shell: bash
 
-    - name: Set IMAGE_NAME env
+    - name: Set IMAGE_NAME env (default)
+      if: inputs.repo_name == null
       run: echo "IMAGE_NAME=$(echo "${{ github.event.repository.name }}" | sed -r 's/([0-9a-zA-Z]+)-docker/\1/g')" >> $GITHUB_ENV
+      shell: bash
+
+    - name: Set IMAGE_NAME env (custom)
+      if: inputs.repo_name != null
+      run: echo "IMAGE_NAME=${{ inputs.repo_name }}" >> $GITHUB_ENV
       shell: bash
 
     - name: Print envs
@@ -83,6 +98,7 @@ runs:
       if: github.event.pull_request.opened == true
       uses: docker/build-push-action@v3
       with:
+        file: ${{ inputs.dockerfile }}
         platforms: ${{ inputs.platforms }}
         push: false
         build-args: |
@@ -95,13 +111,14 @@ runs:
 
     - name: "[main] [dev] Just build the image to retrieve the version" 
       if: >
-        github.ref_name == 'main' 
+        github.ref_name == inputs.main_branch_name 
           && 
         ( github.event_name == 'workflow_dispatch' || github.event_name == 'repository_dispatch' || github.event.pull_request.merged == true )
           &&
         inputs.build_type != 'stable'
       uses: docker/build-push-action@v3
       with:
+        file: ${{ inputs.dockerfile }}
         push: false
         load: true
         build-args: |
@@ -110,7 +127,7 @@ runs:
 
     - name: "[main] [dev] Set VERSION env"
       if: >
-        github.ref_name == 'main' 
+        github.ref_name == inputs.main_branch_name 
           && 
         ( github.event_name == 'workflow_dispatch' || github.event_name == 'repository_dispatch' || github.event.pull_request.merged == true )
           &&
@@ -120,13 +137,14 @@ runs:
 
     - name: "[main] [dev] Build and push"
       if: >
-        github.ref_name == 'main' 
+        github.ref_name == inputs.main_branch_name 
           && 
         ( github.event_name == 'workflow_dispatch' || github.event_name == 'repository_dispatch' || github.event.pull_request.merged == true )
           &&
         inputs.build_type != 'stable'
       uses: docker/build-push-action@v3
       with:
+        file: ${{ inputs.dockerfile }}
         platforms: ${{ inputs.platforms }}
         push: true
         build-args: |
@@ -139,9 +157,19 @@ runs:
     # Stable releases
     # ===========================================
 
+    - name: Print envs
+      run: |
+        echo "github.ref_name=${{ github.ref_name }}"
+        echo "inputs.main_branch_name=${{ inputs.main_branch_name }}"
+        echo "github.event_name=${{ github.event_name }}"
+        echo "inputs.build_type=${{ inputs.build_type }}"
+        echo "inputs.ros_distro=${{ inputs.ros_distro }}"
+        echo "inputs.target_distro=${{ inputs.target_distro }}"
+      shell: bash
+
     - name: "[main] [stable] Pull stable releases from a container registry"
       if: >
-        github.ref_name == 'main' 
+        github.ref_name == inputs.main_branch_name 
           && 
         github.event_name == 'workflow_dispatch'
           && 
@@ -155,7 +183,7 @@ runs:
 
     - name: "[main] [stable] Build and push"
       if: >
-        github.ref_name == 'main' 
+        github.ref_name == inputs.main_branch_name 
           && 
         github.event_name == 'workflow_dispatch'
           && 
@@ -181,9 +209,10 @@ runs:
     # ===========================================
 
     - name: "[feature] Build and push"
-      if: github.ref_name != 'main' && github.event_name == 'workflow_dispatch'
+      if: github.ref_name != inputs.main_branch_name && github.event_name == 'workflow_dispatch'
       uses: docker/build-push-action@v3
       with:
+        file: ${{ inputs.dockerfile }}
         platforms: ${{ inputs.platforms }}
         push: true
         build-args: |
