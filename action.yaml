@@ -107,6 +107,7 @@ runs:
         push: false
         build-args: |
           ROS_DISTRO=${{ inputs.ros_distro }}
+          PREFIX=${{ inputs.prefix }}
         tags: husarion/${{ env.IMAGE_NAME }}:${{ inputs.prefix }}${{ inputs.ros_distro }}-nightly
 
     # ===========================================
@@ -127,6 +128,7 @@ runs:
         load: true
         build-args: |
           ROS_DISTRO=${{ inputs.ros_distro }}
+          PREFIX=${{ inputs.prefix }}
         tags: husarion/${{ env.IMAGE_NAME }}:${{ inputs.prefix }}${{ inputs.ros_distro }}-nightly
 
     - name: "[main] [dev] Set VERSION env"
@@ -153,6 +155,7 @@ runs:
         push: true
         build-args: |
           ROS_DISTRO=${{ inputs.ros_distro }}
+          PREFIX=${{ inputs.prefix }}
         tags: |
           husarion/${{ env.IMAGE_NAME }}:${{ inputs.prefix }}${{ inputs.ros_distro }}-nightly
           husarion/${{ env.IMAGE_NAME }}:${{ inputs.prefix }}${{ inputs.ros_distro }}-${{ env.VERSION }}-${{ env.SHORT_DATE }}
@@ -201,6 +204,7 @@ runs:
         push: true
         build-args: |
           ROS_DISTRO=${{ inputs.target_distro }}
+          PREFIX=${{ inputs.prefix }}
         tags: |
           husarion/${{ env.IMAGE_NAME }}:${{ inputs.target_distro }}
           husarion/${{ env.IMAGE_NAME }}:${{ inputs.target_distro }}-nightly
@@ -221,4 +225,5 @@ runs:
         push: true
         build-args: |
           ROS_DISTRO=${{ inputs.ros_distro }}
+          PREFIX=${{ inputs.prefix }}
         tags: husarion/${{ env.IMAGE_NAME }}:${{ inputs.prefix }}${{ inputs.ros_distro }}-${{ github.head_ref || github.ref_name }}
