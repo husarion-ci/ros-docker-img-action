@@ -16,6 +16,9 @@ inputs:
   repo_name:
     description: "Custom repository name: keep empty to get automatically from repo name"
     default: ""
+  prefix:
+    description: "Custom prefix after account/repo_name:"
+    default: ""   
   build_type:
     description: "\"stable\" or \"development\" release"
     default: "development"
@@ -70,6 +73,7 @@ runs:
         echo "github.event_name=${{ github.event_name }}"
         echo "github.ref_name=${{ github.ref_name }}"
         echo "inputs.ros_distro=${{ inputs.ros_distro }}"
+        echo "inputs.prefix=${{ inputs.prefix }}"
       shell: bash
 
     - name: Checkout
@@ -103,7 +107,7 @@ runs:
         push: false
         build-args: |
           ROS_DISTRO=${{ inputs.ros_distro }}
-        tags: husarion/${{ env.IMAGE_NAME }}:${{ inputs.ros_distro }}-nightly
+        tags: husarion/${{ env.IMAGE_NAME }}:${{ inputs.prefix }}${{ inputs.ros_distro }}-nightly
 
     # ===========================================
     # Nightly releases
@@ -123,7 +127,7 @@ runs:
         load: true
         build-args: |
           ROS_DISTRO=${{ inputs.ros_distro }}
-        tags: husarion/${{ env.IMAGE_NAME }}:${{ inputs.ros_distro }}-nightly
+        tags: husarion/${{ env.IMAGE_NAME }}:${{ inputs.prefix }}${{ inputs.ros_distro }}-nightly
 
     - name: "[main] [dev] Set VERSION env"
       if: >
@@ -150,8 +154,8 @@ runs:
         build-args: |
           ROS_DISTRO=${{ inputs.ros_distro }}
         tags: |
-          husarion/${{ env.IMAGE_NAME }}:${{ inputs.ros_distro }}-nightly
-          husarion/${{ env.IMAGE_NAME }}:${{ inputs.ros_distro }}-${{ env.VERSION }}-${{ env.SHORT_DATE }}
+          husarion/${{ env.IMAGE_NAME }}:${{ inputs.prefix }}${{ inputs.ros_distro }}-nightly
+          husarion/${{ env.IMAGE_NAME }}:${{ inputs.prefix }}${{ inputs.ros_distro }}-${{ env.VERSION }}-${{ env.SHORT_DATE }}
 
     # ===========================================
     # Stable releases
@@ -217,4 +221,4 @@ runs:
         push: true
         build-args: |
           ROS_DISTRO=${{ inputs.ros_distro }}
-        tags: husarion/${{ env.IMAGE_NAME }}:${{ inputs.ros_distro }}-${{ github.head_ref || github.ref_name }}
+        tags: husarion/${{ env.IMAGE_NAME }}:${{ inputs.prefix }}${{ inputs.ros_distro }}-${{ github.head_ref || github.ref_name }}
