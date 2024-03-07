@@ -99,7 +99,7 @@ runs:
     # ===========================================
 
     - name: "[feature] [dev] Test on PR opened" 
-      if: github.event.pull_request.opened == true
+      if: github.event.pull_request != null && (github.event.action == 'opened' || endsWith(github.ref, '/merge'))
       uses: docker/build-push-action@v3
       with:
         file: ${{ inputs.dockerfile }}
