@@ -138,6 +138,7 @@ jobs:
 | `main_branch_name`   | no       | main                     | the name of the main branch - typically "main" or "master"                                                    |
 | `dockerfile`         | no       | Dockerfile               | target Dockerfile                                                                                             |
 | `repo_name`          | no       | -                        | custom repository name: keep empty to get automatically from repo name                                        |
+| `prefix`             | no       | -                        | custom prefix after account/repo_name:                                                                        |
 | `build_type`         | no       | development              | "stable" or "development" release                                                                             |
 | `ros_distro`         | no       | humble                   | target ROS distribution                                                                                       |
 | `platforms`          | no       | linux/amd64, linux/arm64 | target architectures                                                                                          |
