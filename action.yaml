@@ -17,13 +17,16 @@ inputs:
     description: "Custom repository name: keep empty to get automatically from repo name"
     default: ""
   prefix:
-    description: "Custom prefix after account/repo_name:"
+    description: "Custom prefix after account/repo_name to be used as the PREFIX argument in the Dockerfil:"
     default: ""   
   build_type:
     description: "\"stable\" or \"development\" release"
     default: "development"
+  branch_name:
+    description: "Optional branch name to be used as the BRANCH_NAME argument in the Dockerfile"
+    default: "main"
   ros_distro:
-    description: "Target ROS distribution"
+    description: "Target ROS distribution to be used as the ROS_DISTRO argument in the Dockerfile"
     default: "humble"
   platforms:
     description: "Target architectures"
@@ -74,6 +77,7 @@ runs:
         echo "github.ref_name=${{ github.ref_name }}"
         echo "inputs.ros_distro=${{ inputs.ros_distro }}"
         echo "inputs.prefix=${{ inputs.prefix }}"
+        echo "inputs.branch_name=${{ inputs.branch_name }}"
       shell: bash
 
     - name: Checkout
@@ -108,6 +112,7 @@ runs:
         build-args: |
           ROS_DISTRO=${{ inputs.ros_distro }}
           PREFIX=${{ inputs.prefix }}
+          BRANCH_NAME=${{ inputs.branch_name }}
         tags: husarion/${{ env.IMAGE_NAME }}:${{ inputs.prefix }}${{ inputs.ros_distro }}-nightly
 
     # ===========================================
@@ -129,6 +134,7 @@ runs:
         build-args: |
           ROS_DISTRO=${{ inputs.ros_distro }}
           PREFIX=${{ inputs.prefix }}
+          BRANCH_NAME=${{ inputs.branch_name }}
         tags: husarion/${{ env.IMAGE_NAME }}:${{ inputs.prefix }}${{ inputs.ros_distro }}-nightly
 
     - name: "[main] [dev] Set VERSION env"
@@ -156,6 +162,7 @@ runs:
         build-args: |
           ROS_DISTRO=${{ inputs.ros_distro }}
           PREFIX=${{ inputs.prefix }}
+          BRANCH_NAME=${{ inputs.branch_name }}
         tags: |
           husarion/${{ env.IMAGE_NAME }}:${{ inputs.prefix }}${{ inputs.ros_distro }}-nightly
           husarion/${{ env.IMAGE_NAME }}:${{ inputs.prefix }}${{ inputs.ros_distro }}-${{ env.VERSION }}-${{ env.SHORT_DATE }}
@@ -205,6 +212,7 @@ runs:
         build-args: |
           ROS_DISTRO=${{ inputs.target_distro }}
           PREFIX=${{ inputs.prefix }}
+          BRANCH_NAME=${{ inputs.branch_name }}
         tags: |
           husarion/${{ env.IMAGE_NAME }}:${{ inputs.target_distro }}
           husarion/${{ env.IMAGE_NAME }}:${{ inputs.target_distro }}-nightly
@@ -226,4 +234,5 @@ runs:
         build-args: |
           ROS_DISTRO=${{ inputs.ros_distro }}
           PREFIX=${{ inputs.prefix }}
+          BRANCH_NAME=${{ inputs.branch_name }}
         tags: husarion/${{ env.IMAGE_NAME }}:${{ inputs.prefix }}${{ inputs.ros_distro }}-${{ github.head_ref || github.ref_name }}

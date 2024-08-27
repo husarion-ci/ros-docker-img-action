@@ -134,8 +134,10 @@ jobs:
 | `main_branch_name` | no | main | the name of the main branch - typically "main" or "master" |
 | `dockerfile` | no | Dockerfile | target Dockerfile |
 | `repo_name` | no | - | custom repository name: keep empty to get automatically from repo name |
+| `prefix` | no | - | Custom prefix after account/repo_name to be used as the `PREFIX` argument in the `Dockerfile` |
 | `build_type` | no | development | "stable" or "development" release |
-| `ros_distro` | no | humble | target ROS distribution |
+| `branch_name` | no | main | Optional branch name to be used as the `BRANCH_NAME` argument in the `Dockerfile` |
+| `ros_distro` | no | humble | Target ROS distribution to be used as the `ROS_DISTRO` argument in the `Dockerfile` |
 | `platforms` | no | linux/amd64, linux/arm64 | target architectures |
 | `target_distro` | no | ardent | [Stable release only] Point to the ROS distro (part of tag) of the **EXISTING** docker image on DockerHub |
 | `target_release` | no | 0.0.0 | [Stable release only] Point to the release number (part of tag) of the **EXISTING** docker image on DockerHub |
