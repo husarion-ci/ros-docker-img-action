@@ -22,6 +22,9 @@ inputs:
   build_type:
     description: "\"stable\" or \"development\" release"
     default: "development"
+  branch_name_arg:
+    description: "Optional branch name to be used as the BRANCH_NAME_ARG arg in the Dockerfile"
+    default: "main"
   ros_distro:
     description: "Target ROS distribution"
     default: "humble"
@@ -108,6 +111,7 @@ runs:
         build-args: |
           ROS_DISTRO=${{ inputs.ros_distro }}
           PREFIX=${{ inputs.prefix }}
+          BRANCH_NAME_ARG=${{ inputs.branch_name_arg }}
         tags: husarion/${{ env.IMAGE_NAME }}:${{ inputs.prefix }}${{ inputs.ros_distro }}-nightly
 
     # ===========================================
@@ -129,6 +133,7 @@ runs:
         build-args: |
           ROS_DISTRO=${{ inputs.ros_distro }}
           PREFIX=${{ inputs.prefix }}
+          BRANCH_NAME_ARG=${{ inputs.branch_name_arg }}
         tags: husarion/${{ env.IMAGE_NAME }}:${{ inputs.prefix }}${{ inputs.ros_distro }}-nightly
 
     - name: "[main] [dev] Set VERSION env"
@@ -156,6 +161,7 @@ runs:
         build-args: |
           ROS_DISTRO=${{ inputs.ros_distro }}
           PREFIX=${{ inputs.prefix }}
+          BRANCH_NAME_ARG=${{ inputs.branch_name_arg }}
         tags: |
           husarion/${{ env.IMAGE_NAME }}:${{ inputs.prefix }}${{ inputs.ros_distro }}-nightly
           husarion/${{ env.IMAGE_NAME }}:${{ inputs.prefix }}${{ inputs.ros_distro }}-${{ env.VERSION }}-${{ env.SHORT_DATE }}
@@ -205,6 +211,7 @@ runs:
         build-args: |
           ROS_DISTRO=${{ inputs.target_distro }}
           PREFIX=${{ inputs.prefix }}
+          BRANCH_NAME_ARG=${{ inputs.branch_name_arg }}
         tags: |
           husarion/${{ env.IMAGE_NAME }}:${{ inputs.target_distro }}
           husarion/${{ env.IMAGE_NAME }}:${{ inputs.target_distro }}-nightly
@@ -226,4 +233,5 @@ runs:
         build-args: |
           ROS_DISTRO=${{ inputs.ros_distro }}
           PREFIX=${{ inputs.prefix }}
+          BRANCH_NAME_ARG=${{ inputs.branch_name_arg }}
         tags: husarion/${{ env.IMAGE_NAME }}:${{ inputs.prefix }}${{ inputs.ros_distro }}-${{ github.head_ref || github.ref_name }}
