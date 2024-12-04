@@ -41,6 +41,10 @@ inputs:
   target_date: 
     description: "[Stable release only] Point to the date (part of tag) of the EXISTING docker image on DockerHub"
     default: "20131206" 
+  # variables important only for development release
+  feature_branch_tag_suffix:
+    description: "[Development release only] Custom suffix appended to the tag when building the image from a feature branch"
+    default: ""
 outputs: {}
 branding:
   icon: 'box'
@@ -224,8 +228,13 @@ runs:
     # Feature branch releases
     # ===========================================
 
+    - name: Print envs
+      run: |
+        echo "inputs.feature_branch_tag_suffix=${{ inputs.feature_branch_tag_suffix }}"
+      shell: bash
+
     - name: "[feature] Build and push"
-      if: github.ref_name != inputs.main_branch_name && github.event_name == 'workflow_dispatch'
+      if: github.ref_name != inputs.main_branch_name && github.event_name == 'workflow_dispatch' && inputs.feature_branch_tag_suffix == ""
       uses: docker/build-push-action@v3
       with:
         file: ${{ inputs.dockerfile }}
@@ -236,3 +245,16 @@ runs:
           PREFIX=${{ inputs.prefix }}
           BRANCH_NAME=${{ inputs.branch_name }}
         tags: husarion/${{ env.IMAGE_NAME }}:${{ inputs.prefix }}${{ inputs.ros_distro }}-${{ github.head_ref || github.ref_name }}
+
+    - name: "[feature] Build and push with a custom tag suffix"
+      if: github.ref_name != inputs.main_branch_name && github.event_name == 'workflow_dispatch' && inputs.feature_branch_tag_suffix != ""
+      uses: docker/build-push-action@v3
+      with:
+        file: ${{ inputs.dockerfile }}
+        platforms: ${{ inputs.platforms }}
+        push: true
+        build-args: |
+          ROS_DISTRO=${{ inputs.ros_distro }}
+          PREFIX=${{ inputs.prefix }}
+          BRANCH_NAME=${{ inputs.branch_name }}
+        tags: husarion/${{ env.IMAGE_NAME }}:${{ inputs.prefix }}${{ inputs.ros_distro }}-${{ github.head_ref || github.ref_name }}-${{ inputs.feature_branch_tag_suffix }}

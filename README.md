@@ -59,6 +59,9 @@ It will publish the images:
 3. On `repository_dispatch` on different branch than `main` (eg. `my-feature-1`)
 - `husarion/your-repo:<ros-distro>-my-feature-1`
 
+4. On `repository_dispatch` on different branch than `main` (eg. `my-feature-1`) with a custom tag suffix
+- `husarion/your-repo:<ros-distro>-my-feature-1-<tag-suffix>`
+
 ```yaml
 name: Build/Publish Docker Image 
 
@@ -85,6 +88,10 @@ on:
         description: "In case of \"stable\" release specify the date of the existing docker image in format YYYYMMDD (eg. 20220124)"
         type: string
         default: "20131206"
+      feature_branch_tag_suffix:
+        description: "In case of \"development\" release from a feature branch specify the custom tag suffix for the docker image"
+        type: string
+        default: ""
   repository_dispatch:
     types: [rebuild]
   pull_request:
@@ -123,6 +130,8 @@ jobs:
           target_distro: ${{ inputs.target_distro }}
           target_release: ${{ inputs.target_release }}
           target_date: ${{ inputs.target_date }}
+          # variables important only for development release
+          feature_branch_tag_suffix: ${{ inputs.feature_branch_tag_suffix }}
 ```
 
 ## Inputs
@@ -142,3 +151,4 @@ jobs:
 | `target_distro` | no | ardent | [Stable release only] Point to the ROS distro (part of tag) of the **EXISTING** docker image on DockerHub |
 | `target_release` | no | 0.0.0 | [Stable release only] Point to the release number (part of tag) of the **EXISTING** docker image on DockerHub |
 | `target_date` | no | 20131206 | [Stable release only] Point to the date (part of tag) of the **EXISTING** docker image on DockerHub |
+| `feature_branch_tag_suffix` | no | - | [Development release only] Custom tag suffix for the docker image when building from a feature branch |
