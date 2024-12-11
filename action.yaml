@@ -18,7 +18,7 @@ inputs:
     default: ""
   prefix:
     description: "Custom prefix after account/repo_name to be used as the PREFIX argument in the Dockerfil:"
-    default: ""   
+    default: ""
   build_type:
     description: "\"stable\" or \"development\" release"
     default: "development"
@@ -34,13 +34,13 @@ inputs:
   # variables important only for stable release
   target_distro:
     description: "[Stable release only] Point to the ROS distro (part of tag) of the EXISTING docker image on DockerHub"
-    default: "ardent"   
+    default: "ardent"
   target_release:
     description: "[Stable release only] Point to the release number (part of tag) of the EXISTING docker image on DockerHub"
-    default: "0.0.0"     
-  target_date: 
+    default: "0.0.0"
+  target_date:
     description: "[Stable release only] Point to the date (part of tag) of the EXISTING docker image on DockerHub"
-    default: "20131206" 
+    default: "20131206"
   # variables important only for development release
   feature_branch_tag_suffix:
     description: "[Development release only] Custom suffix appended to the tag when building the image from a feature branch"
@@ -49,7 +49,7 @@ outputs: {}
 branding:
   icon: 'box'
   color: 'red'
-  
+
 runs:
   using: "composite"
   steps:
@@ -101,12 +101,12 @@ runs:
         registry: docker.io
         username: ${{ inputs.dockerhub_username }}
         password: ${{ inputs.dockerhub_token }}
-    
+
     # ===========================================
     # Test on PR opened
     # ===========================================
 
-    - name: "[feature] [dev] Test on PR opened" 
+    - name: "[feature] [dev] Test on PR opened"
       if: github.event.pull_request.opened == true
       uses: docker/build-push-action@v3
       with:
@@ -123,10 +123,10 @@ runs:
     # Nightly releases
     # ===========================================
 
-    - name: "[main] [dev] Just build the image to retrieve the version" 
+    - name: "[main] [dev] Just build the image to retrieve the version"
       if: >
-        github.ref_name == inputs.main_branch_name 
-          && 
+        github.ref_name == inputs.main_branch_name
+          &&
         ( github.event_name == 'workflow_dispatch' || github.event_name == 'repository_dispatch' || github.event.pull_request.merged == true )
           &&
         inputs.build_type != 'stable'
@@ -143,8 +143,8 @@ runs:
 
     - name: "[main] [dev] Set VERSION env"
       if: >
-        github.ref_name == inputs.main_branch_name 
-          && 
+        github.ref_name == inputs.main_branch_name
+          &&
         ( github.event_name == 'workflow_dispatch' || github.event_name == 'repository_dispatch' || github.event.pull_request.merged == true )
           &&
         inputs.build_type != 'stable'
@@ -153,8 +153,8 @@ runs:
 
     - name: "[main] [dev] Build and push"
       if: >
-        github.ref_name == inputs.main_branch_name 
-          && 
+        github.ref_name == inputs.main_branch_name
+          &&
         ( github.event_name == 'workflow_dispatch' || github.event_name == 'repository_dispatch' || github.event.pull_request.merged == true )
           &&
         inputs.build_type != 'stable'
@@ -187,10 +187,10 @@ runs:
 
     - name: "[main] [stable] Pull stable releases from a container registry"
       if: >
-        github.ref_name == inputs.main_branch_name 
-          && 
+        github.ref_name == inputs.main_branch_name
+          &&
         github.event_name == 'workflow_dispatch'
-          && 
+          &&
         inputs.build_type == 'stable'
           &&
         inputs.ros_distro == inputs.target_distro
@@ -201,10 +201,10 @@ runs:
 
     - name: "[main] [stable] Build and push"
       if: >
-        github.ref_name == inputs.main_branch_name 
-          && 
+        github.ref_name == inputs.main_branch_name
+          &&
         github.event_name == 'workflow_dispatch'
-          && 
+          &&
         inputs.build_type == 'stable'
           &&
         inputs.ros_distro == inputs.target_distro
@@ -234,7 +234,7 @@ runs:
       shell: bash
 
     - name: "[feature] Build and push"
-      if: github.ref_name != inputs.main_branch_name && github.event_name == 'workflow_dispatch' && inputs.feature_branch_tag_suffix == ""
+      if: github.ref_name != inputs.main_branch_name && github.event_name == 'workflow_dispatch' && inputs.feature_branch_tag_suffix == ''
       uses: docker/build-push-action@v3
       with:
         file: ${{ inputs.dockerfile }}
@@ -247,7 +247,7 @@ runs:
         tags: husarion/${{ env.IMAGE_NAME }}:${{ inputs.prefix }}${{ inputs.ros_distro }}-${{ github.head_ref || github.ref_name }}
 
     - name: "[feature] Build and push with a custom tag suffix"
-      if: github.ref_name != inputs.main_branch_name && github.event_name == 'workflow_dispatch' && inputs.feature_branch_tag_suffix != ""
+      if: github.ref_name != inputs.main_branch_name && github.event_name == 'workflow_dispatch' && inputs.feature_branch_tag_suffix != ''
       uses: docker/build-push-action@v3
       with:
         file: ${{ inputs.dockerfile }}
