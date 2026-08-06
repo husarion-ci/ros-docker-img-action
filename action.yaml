@@ -31,6 +31,9 @@ inputs:
   platforms:
     description: "Target architectures"
     default: "linux/amd64, linux/arm64"
+  secrets:
+    description: "BuildKit secrets"
+    default: ""
   # variables important only for stable release
   target_distro:
     description: "[Stable release only] Point to the ROS distro (part of tag) of the EXISTING docker image on DockerHub"
@@ -112,6 +115,7 @@ runs:
       with:
         file: ${{ inputs.dockerfile }}
         platforms: ${{ inputs.platforms }}
+        secrets: ${{ inputs.secrets }}
         push: false
         build-args: |
           ROS_DISTRO=${{ inputs.ros_distro }}
@@ -133,6 +137,7 @@ runs:
       uses: docker/build-push-action@v6
       with:
         file: ${{ inputs.dockerfile }}
+        secrets: ${{ inputs.secrets }}
         push: false
         load: true
         build-args: |
@@ -162,6 +167,7 @@ runs:
       with:
         file: ${{ inputs.dockerfile }}
         platforms: ${{ inputs.platforms }}
+        secrets: ${{ inputs.secrets }}
         push: true
         build-args: |
           ROS_DISTRO=${{ inputs.ros_distro }}
@@ -211,6 +217,7 @@ runs:
       uses: docker/build-push-action@v6
       with:
         platforms: ${{ inputs.platforms }}
+        secrets: ${{ inputs.secrets }}
         context: ./temp
         push: true
         build-args: |
@@ -239,6 +246,7 @@ runs:
       with:
         file: ${{ inputs.dockerfile }}
         platforms: ${{ inputs.platforms }}
+        secrets: ${{ inputs.secrets }}
         push: true
         build-args: |
           ROS_DISTRO=${{ inputs.ros_distro }}
@@ -252,6 +260,7 @@ runs:
       with:
         file: ${{ inputs.dockerfile }}
         platforms: ${{ inputs.platforms }}
+        secrets: ${{ inputs.secrets }}
         push: true
         build-args: |
           ROS_DISTRO=${{ inputs.ros_distro }}
